@@ -7,4 +7,4 @@
 
 (load-sub-module "defaults.el")
 (load-sub-module "editing.el")
-(load-sub-module "magit.el")
+(load-sub-module "git.el")
