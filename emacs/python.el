@@ -18,12 +18,16 @@ If the 'venv' directory already exists, skip the creation."
             (message "Virtual environment created successfully."))
         (message "Python 3 is not installed or not available in the system path.")))))
 
+(defun extract-package-name (input)
+  (if (string-match "^[\"]?\\([a-zA-Z0-9_-]*\\)\\(\\[[a-zA-Z0-9, ]*\\]\\)?[\"]?$" input)
+      (match-string 1 input)))
+
 (defun ensure-pip-package-installed (package)
   "Check if a given pip PACKAGE is installed in the venv, if not, install it using the venv's pip."
   (interactive "Enter pip package name: ")
   (let* ((venv-pip (get-abs-path "venv/bin/pip"))
          (python-executable (or (executable-find "python3") (executable-find "python")))
-         (check-command (concat venv-pip " show " package))
+         (check-command (concat venv-pip " show " (extract-package-name package)))
          (install-command (concat venv-pip " install " package))
          (venv-exists (file-exists-p venv-pip))
          (package-installed (and venv-exists
