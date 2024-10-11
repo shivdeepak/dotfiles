@@ -39,21 +39,20 @@ If the 'venv' directory already exists, skip the creation."
 
 (ensure-venv)
 (ensure-pip-package-installed "ruff")
+(ensure-pip-package-installed "\"python-lsp-server[all]\"")
+(ensure-pip-package-installed "python-lsp-ruff")
 
 (setq ruff-exec-path (get-abs-path "venv/bin/ruff"))
+(setq pylsp-exec-path (get-abs-path "venv/bin/pylsp"))
 
-(defun run-ruff-on-buffer ()
+(defun eglot-format-and-organize-imports ()
   "Run `ruff check --fix` on the current buffer."
   (interactive)
   (when (eq major-mode 'python-mode)
-    (shell-command (format (concat ruff-exec-path " check --fix %s") (shell-quote-argument (buffer-file-name))))
-    (revert-buffer t t t)))
-
-(defun eglot-format-and-ruff ()
-  "Run eglot-format and then `ruff check --fix`."
-  (interactive)
-  (eglot-format)
-  (run-ruff-on-buffer))
+    (eglot-format)
+    (eglot-code-action-organize-imports 1)
+    )
+  )
 
 (use-package eglot
   :ensure t
@@ -61,5 +60,5 @@ If the 'venv' directory already exists, skip the creation."
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-		 `(python-mode . (,ruff-exec-path "server")))
-    (add-hook 'after-save-hook 'eglot-format-and-ruff)))
+		 `(python-mode . (,pylsp-exec-path)))
+    (add-hook 'after-save-hook 'eglot-format-and-organize-imports)))
