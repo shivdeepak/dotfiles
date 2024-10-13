@@ -2,4 +2,5 @@ emacs/auto-save-list/
 emacs/backups/
 emacs/elpa/
 emacs/transient/
+emacs/tree-sitter/
 venv

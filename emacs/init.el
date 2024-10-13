@@ -10,4 +10,7 @@
 (load-sub-module "defaults.el")
 (load-sub-module "editing.el")
 (load-sub-module "git.el")
+
+(setq treesit-language-source-alist '())
 (load-sub-module "python.el")
+(load-sub-module "rust.el")

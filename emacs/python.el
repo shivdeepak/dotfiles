@@ -1,3 +1,8 @@
+(add-to-list 'treesit-language-source-alist '(python "https://github.com/tree-sitter/tree-sitter-python"))
+(treesit-install-language-grammar 'python)
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
+
 (defun ensure-venv ()
   "Check if Python 3 is installed and use it to create a virtual environment.
 If the 'venv' directory already exists, skip the creation."
@@ -52,7 +57,7 @@ If the 'venv' directory already exists, skip the creation."
 (defun eglot-format-and-organize-imports ()
   "Run `ruff check --fix` on the current buffer."
   (interactive)
-  (when (eq major-mode 'python-mode)
+  (when (eq major-mode 'python-ts-mode)
     (eglot-format)
     (eglot-code-action-organize-imports 1)
     )
@@ -60,9 +65,9 @@ If the 'venv' directory already exists, skip the creation."
 
 (use-package eglot
   :ensure t
-  :hook (python-mode . eglot-ensure)
+  :hook (python-ts-mode . eglot-ensure)
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-		 `(python-mode . (,pylsp-exec-path)))
+		 `(python-ts-mode . (,pylsp-exec-path)))
     (add-hook 'after-save-hook 'eglot-format-and-organize-imports)))
